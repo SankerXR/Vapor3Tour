@@ -15,12 +15,12 @@ final class UserRouteController: RouteCollection {
     
     func boot(router: Router) throws {
         
-        let group = router.grouped("users")
+        let group = router.grouped("user")
         group.post(LoginUser.self, at: "register", use: registerHandle)
         
         group.post(LoginUser.self, at: "login", use: loginUserHandler)
 //验证Token
-//        group.grouped(JWTVerificationMiddleware()).post("changePassword", use: <#T##(Request) throws -> ResponseEncodable#>)
+        group.grouped(JWTStorageMiddleware<Payload>()).post(UserInfoParam.self, at: "update", use: updateUserInfo)
     }
 
 }
@@ -80,6 +80,32 @@ extension UserRouteController {
             
         }
     }
+    
+    /// 更新用户信息
+    //TOD0: 无参数校验问题， 返回全字段
+    func updateUserInfo(_ req: Request, params: UserInfoParam) throws -> Future<Response> {
+        
+
+        let payload:Payload = try req.get("skelpo-payload")!
+        return UserInfo.query(on: req).filter(\.userId == payload.id).first().flatMap({ (existUser) in
+            
+            var newUserInfo = existUser
+            if existUser == nil {
+                newUserInfo = UserInfo(userId: payload.id)
+            }
+            
+            return newUserInfo!.updateInfo(with: params).save(on: req).flatMap({ (userInfo) in
+                let userInfoParam = UserInfoParam(userInfo: userInfo)
+                
+                return try ResponseJSON<UserInfoParam>(status: .success, message: "更新成功", data: userInfoParam).encode(for: req)
+            })
+            
+        })
+        
+        
+        
+  
+    }
 }
 
 extension UserRouteController {
@@ -95,3 +121,4 @@ extension UserRouteController {
 private struct LoginResponse: Content {
     var token: String
 }
+
