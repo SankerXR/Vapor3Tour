@@ -68,7 +68,7 @@ extension UserRouteController {
             
             let digest = try req.make(BCryptDigest.self)
             
-            return try LoginUser(userId: UUID().uuidString, account: newUser.account, password: digest.hash(newUser.password)).save(on: req).flatMap({ (savedUser)  in
+            return try LoginUser(account: newUser.account, password: digest.hash(newUser.password)).save(on: req).flatMap({ (savedUser)  in
                 
                 let signer = try req.make(JWTService.self)
                 
@@ -111,7 +111,7 @@ extension UserRouteController {
 extension UserRouteController {
    private func createSignedJWT(With jwtService: JWTService, user: LoginUser) throws -> String {
         // here we create a payload for our JWT
-        let payload1 = Payload(exp: 10000000000, iat: 100, account: user.account, id: user.id!)
+    let payload1 = Payload(exp: 10000000000, iat: 100, id: user.userId!)
         let signedJWT = try jwtService.sign(payload1)
 
         return signedJWT

@@ -6,8 +6,8 @@
 //
 
 import Vapor
-import FluentSQLite
+import FluentMySQL
 
 
-public typealias BaseSQLModel = SQLiteModel & Migration & Content
+public typealias BaseSQLModel = MySQLModel & Migration & Content
 

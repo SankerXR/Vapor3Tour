@@ -14,10 +14,16 @@ struct LoginUser: BaseSQLModel {
     private(set) var account: String
     var password: String
     
-    init(userId: String, account: String, password: String) {
-        self.userId = userId
+
+    var createdAt: Date?
+    
+    
+    
+    init(account: String, password: String) {
         self.account = account
         self.password = password
+        self.userId = UUID().uuidString
+        self.createdAt = Date() 
     }
     
 }

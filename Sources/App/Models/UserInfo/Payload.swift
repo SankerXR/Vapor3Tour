@@ -12,11 +12,13 @@ import JWTMiddleware
 
 struct Payload: IdentifiableJWTPayload {
     
+    
+    
     let exp: TimeInterval
     let iat: TimeInterval
     
-    let account: String
-    let id: Int
+    let id: String //用户idStr
+
     
     func verify() throws {
         let expiration = Date(timeIntervalSince1970: self.exp)

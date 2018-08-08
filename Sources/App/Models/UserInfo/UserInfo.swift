@@ -10,7 +10,7 @@ import Vapor
 struct UserInfo: BaseSQLModel {
     var id: Int?
     
-    var userId: Int
+    var userId: String
     
     var age: Int?
     var sex: Int?
@@ -20,9 +20,10 @@ struct UserInfo: BaseSQLModel {
     var location: String?
     var picName: String?
     
-    init(userId: Int) {
+    init(userId: String) {
         self.userId = userId
     }
+    
     
 }
 
@@ -64,12 +65,12 @@ struct UserInfoParam: Content {
     var picName: String?
     
     init(userInfo: UserInfo) {
-        self.age = userInfo.age
-        self.sex = userInfo.sex
-        self.nickName = userInfo.nickName
-        self.phone = userInfo.phone
-        self.birthday = userInfo.birthday
-        self.location = userInfo.location
-        self.picName = userInfo.picName
+        self.age = userInfo.age ?? 0
+        self.sex = userInfo.sex ?? 0
+        self.nickName = userInfo.nickName ?? ""
+        self.phone = userInfo.phone ?? ""
+        self.birthday = userInfo.birthday ?? ""
+        self.location = userInfo.location ?? ""
+        self.picName = userInfo.picName ?? ""
     }
 }
